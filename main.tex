@@ -1,0 +1,151 @@
+\documentclass[titlepage]{article}
+
+
+\usepackage[colorlinks,allcolors=black,]{hyperref}
+\usepackage[capitalise,noabbrev,nameinlink]{cleveref}
+\usepackage[all]{hypcap} % hyperlinks goto top of figures, not the bottom
+ 
+\usepackage[dvipsnames]{xcolor}
+\usepackage{listings}
+\input{avrListing.tex}
+
+
+%\lstloadlanguages{[AVR]Assembler}%
+
+
+
+\begin{document}
+\title{Usage of the AVR assembly with the lstListing package}
+\author {Dr. Benjamin Viall}
+
+
+\maketitle
+
+\section{Introduction}
+As of 2018 the ECE263 class uses the Atmel/Microchip atMega328p for its asm programming. this uses a assembly language varient which is unsupported natively by the lstlisting package. given that the atmel studio enviroment intelegently detects register names and not all registers in a give processor are available in every processor in the atmel family, syntax highlighting will always be ad hoc in \LaTeX. To simplify the usage of listings in lab reports the avrListing.tex file has been released to make atmega328p code listings look "good".
+
+\section {Usage}
+Code listings in avr asm require only that the 'avrListing.tex' file is in your project and you include the following line in your preamle (near your other usepackage directives)
+
+\verb|\include{avrListing.tex}|
+
+now code can be included in two ways. 
+\begin{enumerate}
+	\item inline listings (suitable for short code snippets)
+	\item file include (appendices that have full file listings)
+\end{enumerate}
+
+\subsection{Any listing}
+ Regardless of the listing type you choose all asm snippets will share common markup language. best practice sugests that snippets are shown as either figures or code listings. for the purposes of example, we will show all examples using the figure environment. 
+ 
+ While it is not strictly needed to redeclare \verb|\lstset| everytime you make a figure, it will make copy/paste operations easier in the future, especially if you are using multiple languages in a document. \cref{fig:figurePreamble} demonstrates how to begin adding a figure that will contain the AVR assembly snippet. Two keyword arguments are demonstrated. the first \verb|language=[AVR]{Assembler}|, tells the listing package that you wish to use the keywords defined for the AVR variant of an Assembler language. The second , \verb|style=avrasm| tells the package to use the avrasm style designed to mimic the syntax highlighting of of atmel studio.
+ 
+\begin{figure}[h!]
+\label{fig:figurePreamble}
+\lstset{language=Tex}
+\begin{lstlisting}
+\begin {figure}
+\label{fig:macros}
+\lstset{language=[AVR]{Assembler},style=avrasm}
+...
+\caption {a caption for this ASM listing...}
+\end{figure}
+
+\end{lstlisting}
+\caption{Any figure that contains a asm listing.}
+\end{figure}
+
+\subsection{Inline Listings}
+now that we have covered the use of any type of listing we demonstrate the use of the lstlisting enviroment. the code shown in \cref{fig:inlineExample} displays an avrAsm macro as a figure. the resulting code is shown in \cref{fig:simpleMacro}. The colors are a result of the style keyword. changing the contents of the style inside of avrListing.tex is possible but not recommended. if you wish to define your own style begin by copying the style definition into your tex document and giving it a unique name, then edit to your desired color scheme.
+
+It is also still possible to use other languages with the avrListing.tex file. In \cref{fig:CListing} and \cref{fig:ClistingSOurce} the differences between c and asm listings are clear. only the language keyword is changed. the usage of the frame keyword is used as a stylistic choice and is not needed.
+
+\begin{figure}
+\label{fig:inlineExample}
+\begin{lstlisting}[language=Tex,frame=single]
+\begin{figure}
+\label{fig:macros}
+\lstset{language=[AVR]{Assembler},style=avrasm}
+\begin{lstlisting}[frame=none]
+
+;STore Imm. byte - Store byte to sram
+;  Usage: STI [Addr16],Rt,[k8]
+.macro STI ;
+LDI @1,@2
+STS @0,@1
+.endmacro
+end{lstlisting}
+
+\caption{macros...macros everywhere}
+\end{figure}
+\end{lstlisting}
+\caption{tex source for inline code listings.}
+\end{figure}
+
+
+
+\begin{figure}
+\label{fig:simpleMacro}
+\lstset{language=[AVR]{Assembler},style=avrasm} % AVR 8-bit Assembler
+\begin{lstlisting}[frame=none]
+
+;STore Imm. byte - Store byte to sram
+;  Usage: STI [Addr16],Rt,[k8]
+.macro STI ;
+	LDI @1,@2
+	STS @0,@1
+.endmacro
+\end{lstlisting}
+
+\caption{a simple macro}
+\end{figure}
+
+
+\begin{figure}
+\label{fig:CListing}
+\begin{lstlisting}[language=c,frame=single]
+#include <avr/io.h>
+void main()
+{
+	while (1)
+	{
+		PIND=_BV(5);
+	}	
+}
+\end{lstlisting}
+\caption{other languages still work}
+\end{figure}
+
+
+\begin{figure}
+	\label{fig:ClistingSOurce}
+		\begin{lstlisting}[language=tex]
+\begin{figure}
+\label{fig:CListing}
+\begin{lstlisting}[language=c,frame=single]
+ #include <avr/io.h>
+ void main()
+ {
+ while (1)
+ {
+  PIND=_BV(5);
+ }	
+}
+end{lstlisting}
+\caption{other languages still work}
+\end{figure}
+\end{lstlisting}
+\caption {tex code for a C style Listing.}
+\end{figure}
+
+
+\begin{figure}
+ \lstset{language=[AVR]{Assembler},style=avrasm} % AVR 8-bit Assembler
+	
+ \lstinputlisting{main.asm}
+ \caption{big file}
+\end{figure}
+
+
+
+\end{document}

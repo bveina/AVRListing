@@ -1,0 +1,15 @@
+ \begin{figure}
+ \label{fig:CListingg}
+ \begin{lstlisting}[language=c,
+            style=avrasm,frame=single]
+#include <avr/io.h>
+void main()
+{
+  while (1)
+  {
+    PIND=_BV(5);
+  }	
+}
+ \end{lstlisting}
+ \caption{other languages still work}
+\end{figure}
